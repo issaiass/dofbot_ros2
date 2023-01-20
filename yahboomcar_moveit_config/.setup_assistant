@@ -7,7 +7,7 @@ moveit_setup_assistant_config:
   package_settings:
     author_name: rangel
     author_email: issaiass@hotmail.com
-    generated_timestamp: 1674096983
+    generated_timestamp: 1674175590
   control_xacro:
     command:
       - position
