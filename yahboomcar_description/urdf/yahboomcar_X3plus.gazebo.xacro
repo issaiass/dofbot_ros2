@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<robot name="yahboomcar_X3plus" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="camera_name"  value  = "mycamera"/>
+<xacro:property name="frame_name"  value  = "camera_link"/>
+<gazebo reference="camera_link">
+    <!--arg name="camera_name"  default  = "mycamera"/-->
+    <sensor name="astra_camera" type="depth">
+        <visualize>true</visualize>
+        <update_rate>30</update_rate>
+        <camera>
+            <horizontal_fov>1.047198</horizontal_fov>
+            <image>
+                <width>640</width>
+                <height>480</height>
+                <format>R8G8B8</format>
+            </image>
+            <clip>
+                <near>0.05</near>
+                <far>3</far>
+            </clip>
+        </camera>
+        <plugin name="astra_camera_link_controller" filename="libgazebo_ros_camera.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>1.0</updateRate>
+            <cameraName>${camera_name}_ir</cameraName>
+            <imageTopicName>/${camera_name}/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/${camera_name}/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/${camera_name}/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/${camera_name}/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/${camera_name}/depth/points</pointCloudTopicName>
+            <frameName>${frame_name}</frameName>
+            <pointCloudCutoff>0.5</pointCloudCutoff>
+            <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+        </plugin>
+    </sensor>
+</gazebo>
+
+
+<xacro:property name="camera_name1"  value  = "mono_camera"/>
+<xacro:property name="frame_name1"  value  = "mono_link"/>
+<gazebo reference="mono_link">
+    <sensor name="mono_camera" type="depth">
+        <update_rate>30</update_rate>
+        <camera>
+            <pose>0 0 0 0 0 -1.5707</pose>
+            <horizontal_fov>1.047198</horizontal_fov>
+            <image>
+                <width>640</width>
+                <height>480</height>
+                <format>R8G8B8</format>
+            </image>
+            <clip>
+                <near>0.05</near>
+                <far>3</far>
+            </clip>
+        </camera>
+        <plugin name="mono_link_controller" filename="libgazebo_ros_camera.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>1.0</updateRate>
+            <cameraName>${camera_name1}_ir</cameraName>
+            <imageTopicName>/${camera_name1}/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/${camera_name1}/color/camera_info</cameraInfoTopicName>
+            <frameName>${frame_name1}</frameName>
+            <pointCloudCutoff>0.5</pointCloudCutoff>
+            <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+        </plugin>
+    </sensor>
+</gazebo>
+
+
+  <!-- ROS2 CONTROL -->
+    <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>    
+    <joint name="arm_joint1">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="arm_joint2">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="arm_joint3">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="arm_joint4">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="arm_joint5">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="grip_joint">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control>
+  
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>$(find yahboomcar_control)/config/position_controller.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>

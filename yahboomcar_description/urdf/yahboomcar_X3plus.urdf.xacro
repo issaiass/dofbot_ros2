@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="yahboomcar_X3plus" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="$(find yahboomcar_description)/urdf/yahboomcar_X3plus.gazebo.xacro"/>
+
+    <material name="Green">
+        <color rgba="0 0.7 0 1"/>
+    </material>
+    <material name="White">
+        <color rgba="0.7 0.7 0.7 1"/>
+    </material>
+
+    <link name="base_footprint"/>
+
+    <!-- common link / base_link -->
+    <xacro:macro name="common_link" params="name material path *origin">
+        <link name="${name}">
+            <visual>
+                <geometry>
+                    <mesh filename="package://yahboomcar_description/meshes/${path}/visual/${name}.STL"/>
+                </geometry>
+                <material name="${material}"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://yahboomcar_description/meshes/${path}/collision/${name}.STL"/>
+                </geometry>
+            </collision>
+            <xacro:insert_block name="origin"/>
+        </link>
+    </xacro:macro>
+
+    <!-- revolute joint-->
+    <xacro:macro name="revolute_joint" params="name parent child xyz rpy axisZ lower upper">
+        <joint name="${name}" type="revolute">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <axis xyz="0 0 ${axisZ}"/>
+            <limit lower="${lower}" upper="${upper}" effort="100" velocity="1"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- continuous joint-->
+    <xacro:macro name="continuous_joint" params="name parent child xyz rpy mimic">
+        <joint name="${name}" type="continuous">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <axis xyz="0 0 1"/>
+            <mimic joint="grip_joint" multiplier="${mimic}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- fixed joint-->
+    <xacro:macro name="fixed_joint" params="name parent child xyz rpy">
+        <joint name="${name}" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:common_link name="base_link" material="White" path="X3plus">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0754239466482"/>
+            <inertia
+                    ixx="0.001"
+                    ixy="0.0"
+                    ixz="0.0"
+                    iyy="0.0"
+                    iyz="1.72E-05"
+                    izz="0.001"/>
+        </inertial>
+    </xacro:common_link>
+
+
+    <!-- ARM LINKS -->
+    <xacro:common_link name="arm_link1" material="White" path="X3plus">
+        <inertial>
+            <origin xyz="1.99179507982521E-05 -5.98354652829568E-05 0.0114289358828097" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="arm_link2" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.024903 -0.0022632 -0.00066663" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="arm_link3" material="White" path="X3plus">
+        <inertial>
+            <origin xyz="0.024903 -0.0022634 -0.0013962" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="arm_link4" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.036246 0.0023413 -0.0019655" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="arm_link5" material="White" path="X3plus">
+        <inertial>
+            <origin xyz="0.0023228 0.018169 0.028684" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+    <!-- END ARM LINKS -->
+
+    <!-- GRIPPER LINKS -->
+    <xacro:common_link name="rlink1" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.00653227489887718 0.000416767821288678 0.000980984132845697" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="rlink2" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.021158 0.0063295 -0.0030251" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+
+    <xacro:common_link name="rlink3" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.014355 1.1499E-05 -0.0033992" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="llink1" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.00628617364795481 -0.000318530407893543 0.00100000338924466" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+
+    <xacro:common_link name="llink2" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.021159 -0.0063248 -0.0030251" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="llink3" material="Green" path="X3plus">
+        <inertial>
+            <origin xyz="0.014354 -7.4795E-05 -0.0033992" rpy="0 0 0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+
+    <xacro:common_link name="mono_link" material="White" path="sensor">
+        <inertial>
+            <origin xyz="5.8458E-05 0.0095015 -0.0014824" rpy="0 0 0"/>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+    <!-- END GRIPPER LINKS -->
+
+    <!-- RGBD Camera Links -->
+    <xacro:common_link name="camera_link" material="White" path="sensor">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </xacro:common_link>
+    <!-- END RGBD Camera Links -->
+
+    <!-- joint concatenation -->
+    <xacro:fixed_joint name="base_joint" parent="base_footprint" child="base_link" xyz="0.0 0.0 0.076" rpy="0 0 0"/>
+    <xacro:revolute_joint name="arm_joint1" parent="base_link" child="arm_link1" xyz="0 0 0.07" rpy="0 0 ${pi/2}" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
+    <xacro:revolute_joint name="arm_joint2" parent="arm_link1" child="arm_link2" xyz="0 0 0.0405" rpy="-${pi/2} 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
+    <xacro:revolute_joint name="arm_joint3" parent="arm_link2" child="arm_link3" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
+    <xacro:revolute_joint name="arm_joint4" parent="arm_link3" child="arm_link4" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
+    <xacro:revolute_joint name="arm_joint5" parent="arm_link4" child="arm_link5" xyz="-0.00215 -0.17455 0" rpy="${pi/2} 0 0" axisZ="1" lower="-${pi/2}" upper="${pi}"/>
+    <xacro:revolute_joint name="grip_joint" parent="arm_link5" child="rlink1" xyz="-0.0035 -0.012625 -0.0685" rpy="0 -${pi/2} 0" axisZ="1" lower="-${pi/2}" upper="0"/>
+    <!-- END joint concatenation -->
+
+    <!-- gripper joints -->
+    <xacro:continuous_joint name="rlink_joint2" parent="rlink1" child="rlink2" xyz="0.03 -0.00075429 0" rpy="0 0 0" mimic="-1"/>
+    <xacro:continuous_joint name="rlink_joint3" parent="arm_link5" child="rlink3" xyz="-0.0035 -0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="1"/>
+    <xacro:continuous_joint name="llink_joint1" parent="arm_link5" child="llink1" xyz="-0.0035 0.012375 -0.0685" rpy="0 -${pi/2} 0" mimic="-1"/>
+    <xacro:continuous_joint name="llink_joint2" parent="llink1" child="llink2" xyz="0.03 0.00065104 0" rpy="0 0 0" mimic="1"/>
+    <xacro:continuous_joint name="llink_joint3" parent="arm_link5" child="llink3" xyz="-0.0035 0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="-1"/>
+    <!-- END gripper joints -->
+
+    <!--rgb camera joint -->
+    <xacro:fixed_joint name="mono_joint" parent="arm_link4" child="mono_link" xyz="-0.0481 -0.05145 -0.0022" rpy="${pi/2} 0 0"/>
+    <!-- rgbd camera joint -->
+    <xacro:fixed_joint name="camera_joint" parent="base_link" child="camera_link" xyz="0 -0.2 0.41955" rpy="0 ${pi/4} ${pi/2}"/>
+    <!-- END rgbd camera joint -->
+
+
+  <gazebo reference="base_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>
+    <material>Gazebo/Gray</material>  
+  </gazebo>  
+
+  <gazebo reference="arm_link1">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Gray</material>  
+  </gazebo>  
+
+  <gazebo reference="arm_link2">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>    
+
+  <gazebo reference="arm_link3">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Gray</material>  
+  </gazebo> 
+
+  <gazebo reference="arm_link4">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo> 
+
+  <gazebo reference="arm_link5">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>   
+
+  <gazebo reference="rlink1">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo> 
+
+  <gazebo reference="rlink2">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>   
+  
+  <gazebo reference="rlink3">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>
+
+  <gazebo reference="llink1">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>
+
+  <gazebo reference="llink2">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo>
+
+  <gazebo reference="llink3">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>  
+    <material>Gazebo/Green</material>  
+  </gazebo> 
+
+  <gazebo reference="mono_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>
+    <material>Gazebo/Gray</material>  
+  </gazebo> 
+
+  <gazebo reference="camera_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000</kp>
+    <kd>1000000</kd>
+    <material>Gazebo/Gray</material>  
+  </gazebo> 
+
+</robot>
