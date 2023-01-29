@@ -25,19 +25,19 @@ arm_controller:
     command_interfaces:
       - position
       - velocity
-      - effort
+      #- effort
     state_interfaces:
       - position
       - velocity
-      - effort
+      #- effort
 gripper_controller:
   ros__parameters:
     joint: grip_joint
     command_interfaces:
       - position
       - velocity
-      - effort
+      #- effort
     state_interfaces:
       - position
       - velocity
-      - effort
+      #- effort

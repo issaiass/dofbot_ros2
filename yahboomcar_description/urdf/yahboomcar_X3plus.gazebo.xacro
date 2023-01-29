@@ -1,10 +1,29 @@
 <?xml version="1.0"?>
 <robot name="yahboomcar_X3plus" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<xacro:macro name="mimic_joint_plugin_gazebo" params="name_prefix parent_joint mimic_joint has_pid:=false multiplier:=1.0 offset:=0 sensitiveness:=0.0 max_effort:=1.0 robot_namespace:=''">
+    <gazebo>
+	    <plugin name="${name_prefix}mimic_joint_plugin" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+		    <joint>${parent_joint}</joint>
+			<mimicJoint>${mimic_joint}</mimicJoint>
+			<xacro:if value="${has_pid}">                     <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
+			    <hasPID />
+			</xacro:if>
+			<multiplier>${multiplier}</multiplier>
+			<offset>${offset}</offset>
+			<sensitiveness>${sensitiveness}</sensitiveness>   <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
+			<maxEffort>${max_effort}</maxEffort>              <!-- only taken into account if has_pid:=true [Nm] -->
+			<xacro:unless value="${robot_namespace == ''}">
+			<robotNamespace>${robot_namespace}</robotNamespace>
+			</xacro:unless>
+		</plugin>
+	</gazebo>
+</xacro:macro>
+
 <xacro:property name="camera_name"  value  = "mycamera"/>
 <xacro:property name="frame_name"  value  = "camera_link"/>
+
 <gazebo reference="camera_link">
-    <!--arg name="camera_name"  default  = "mycamera"/-->
     <sensor name="astra_camera" type="depth">
         <visualize>true</visualize>
         <update_rate>30</update_rate>
@@ -92,14 +111,24 @@
 
 
   <!-- ROS2 CONTROL -->
-    <ros2_control name="GazeboSystem" type="system">
+    <ros2_control name="yahboomcar_x3plusSystem" type="system">
+    
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>    
+    </hardware>
+
     <joint name="arm_joint1">
       <command_interface name="position">
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
       </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -111,6 +140,14 @@
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
       </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
@@ -120,6 +157,14 @@
       <command_interface name="position">
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
       </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -131,6 +176,14 @@
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
       </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
@@ -141,6 +194,14 @@
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
       </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>      
       <state_interface name="position"/>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
@@ -151,15 +212,118 @@
         <param name="min">-6.28</param>
         <param name="max">6.28</param>
       </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
     </joint>
+
+
+    <joint name="rlink_joint2_mimic">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+
+    <joint name="rlink_joint3_mimic">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="llink_joint1_mimic">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="llink_joint2_mimic">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+    <joint name="llink_joint3_mimic">
+      <command_interface name="position">
+        <param name="min">-6.28</param>
+        <param name="max">6.28</param>
+      </command_interface>
+      <command_interface name="velocity">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+      </command_interface>
+      <command_interface name="effort">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+
+
+
   </ros2_control>
   
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find yahboomcar_control)/config/position_controller.yaml</parameters>
+      <parameters>$(find yahboomcar_control)/config/joint_trajectory_controller.yaml</parameters>
     </plugin>
   </gazebo>
 

@@ -10,8 +10,6 @@
         <color rgba="0.7 0.7 0.7 1"/>
     </material>
 
-    <link name="base_footprint"/>
-
     <!-- common link / base_link -->
     <xacro:macro name="common_link" params="name material path *origin">
         <link name="${name}">
@@ -31,13 +29,13 @@
     </xacro:macro>
 
     <!-- revolute joint-->
-    <xacro:macro name="revolute_joint" params="name parent child xyz rpy axisZ lower upper">
+    <xacro:macro name="revolute_joint" params="name parent child xyz rpy axisZ lower upper vel">
         <joint name="${name}" type="revolute">
             <parent link="${parent}"/>
             <child link="${child}"/>
             <origin xyz="${xyz}" rpy="${rpy}"/>
             <axis xyz="0 0 ${axisZ}"/>
-            <limit lower="${lower}" upper="${upper}" effort="100" velocity="1"/>
+            <limit lower="${lower}" upper="${upper}" effort="100" velocity="${vel}"/>
         </joint>
     </xacro:macro>
 
@@ -188,23 +186,33 @@
     </xacro:common_link>
     <!-- END RGBD Camera Links -->
 
+    <!-- classic world joint -->
+    <link name="world" />
     <!-- joint concatenation -->
-    <xacro:fixed_joint name="base_joint" parent="base_footprint" child="base_link" xyz="0.0 0.0 0.076" rpy="0 0 0"/>
-    <xacro:revolute_joint name="arm_joint1" parent="base_link" child="arm_link1" xyz="0 0 0.07" rpy="0 0 ${pi/2}" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
-    <xacro:revolute_joint name="arm_joint2" parent="arm_link1" child="arm_link2" xyz="0 0 0.0405" rpy="-${pi/2} 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
-    <xacro:revolute_joint name="arm_joint3" parent="arm_link2" child="arm_link3" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
-    <xacro:revolute_joint name="arm_joint4" parent="arm_link3" child="arm_link4" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}"/>
-    <xacro:revolute_joint name="arm_joint5" parent="arm_link4" child="arm_link5" xyz="-0.00215 -0.17455 0" rpy="${pi/2} 0 0" axisZ="1" lower="-${pi/2}" upper="${pi}"/>
-    <xacro:revolute_joint name="grip_joint" parent="arm_link5" child="rlink1" xyz="-0.0035 -0.012625 -0.0685" rpy="0 -${pi/2} 0" axisZ="1" lower="-${pi/2}" upper="0"/>
+    <xacro:fixed_joint name="base_joint" parent="world" child="base_link" xyz="0.0 0.0 0.076" rpy="0 0 0"/>
+    <xacro:revolute_joint name="arm_joint1" parent="base_link" child="arm_link1" xyz="0 0 0.07" rpy="0 0 ${pi/2}" axisZ="-1" lower="-${pi/2}" upper="${pi/2}" vel="3.14"/>
+    <xacro:revolute_joint name="arm_joint2" parent="arm_link1" child="arm_link2" xyz="0 0 0.0405" rpy="-${pi/2} 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}" vel="3.14"/>
+    <xacro:revolute_joint name="arm_joint3" parent="arm_link2" child="arm_link3" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}" vel="3.14"/>
+    <xacro:revolute_joint name="arm_joint4" parent="arm_link3" child="arm_link4" xyz="0 -0.0829 0" rpy="0 0 0" axisZ="-1" lower="-${pi/2}" upper="${pi/2}" vel="3.14"/>
+    <xacro:revolute_joint name="arm_joint5" parent="arm_link4" child="arm_link5" xyz="-0.00215 -0.17455 0" rpy="${pi/2} 0 0" axisZ="1" lower="-${pi/2}" upper="${pi}" vel="3.14"/>
+    <xacro:revolute_joint name="grip_joint" parent="arm_link5" child="rlink1" xyz="-0.0035 -0.012625 -0.0685" rpy="0 -${pi/2} 0" axisZ="1" lower="-${pi/2}" upper="0" vel="3.14"/>
     <!-- END joint concatenation -->
 
     <!-- gripper joints -->
-    <xacro:continuous_joint name="rlink_joint2" parent="rlink1" child="rlink2" xyz="0.03 -0.00075429 0" rpy="0 0 0" mimic="-1"/>
-    <xacro:continuous_joint name="rlink_joint3" parent="arm_link5" child="rlink3" xyz="-0.0035 -0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="1"/>
-    <xacro:continuous_joint name="llink_joint1" parent="arm_link5" child="llink1" xyz="-0.0035 0.012375 -0.0685" rpy="0 -${pi/2} 0" mimic="-1"/>
-    <xacro:continuous_joint name="llink_joint2" parent="llink1" child="llink2" xyz="0.03 0.00065104 0" rpy="0 0 0" mimic="1"/>
-    <xacro:continuous_joint name="llink_joint3" parent="arm_link5" child="llink3" xyz="-0.0035 0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="-1"/>
+    <xacro:continuous_joint name="rlink_joint2_mimic" parent="rlink1" child="rlink2" xyz="0.03 -0.00075429 0" rpy="0 0 0" mimic="-1"/>
+    <xacro:continuous_joint name="rlink_joint3_mimic" parent="arm_link5" child="rlink3" xyz="-0.0035 -0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="1"/>
+    <xacro:continuous_joint name="llink_joint1_mimic" parent="arm_link5" child="llink1" xyz="-0.0035 0.012375 -0.0685" rpy="0 -${pi/2} 0" mimic="-1"/>
+    <xacro:continuous_joint name="llink_joint2_mimic" parent="llink1" child="llink2" xyz="0.03 0.00065104 0" rpy="0 0 0" mimic="1"/>
+    <xacro:continuous_joint name="llink_joint3_mimic" parent="arm_link5" child="llink3" xyz="-0.0035 0.0045 -0.0505" rpy="0 -${pi/2} 0" mimic="-1"/>
     <!-- END gripper joints -->
+
+    <!-- Gripper Mimic -->
+    <xacro:mimic_joint_plugin_gazebo name_prefix="rlink_join2_mimic" parent_joint="gripper_joint" mimic_joint="rlink_joint2_mimic" has_pid="false" multiplier="-1" max_effort="10.6" />
+    <xacro:mimic_joint_plugin_gazebo name_prefix="rlink_join3_mimic" parent_joint="gripper_joint" mimic_joint="rlink_joint3_mimic" has_pid="false" multiplier="1" max_effort="10.6" />
+    <xacro:mimic_joint_plugin_gazebo name_prefix="llink_join1_mimic" parent_joint="gripper_joint" mimic_joint="llink_joint1_mimic" has_pid="false" multiplier="-1" max_effort="10.6" />
+    <xacro:mimic_joint_plugin_gazebo name_prefix="llink_join2_mimic" parent_joint="gripper_joint" mimic_joint="llink_joint2_mimic" has_pid="false" multiplier="1" max_effort="10.6" />
+    <xacro:mimic_joint_plugin_gazebo name_prefix="llink_join3_mimic" parent_joint="gripper_joint" mimic_joint="llink_joint3_mimic" has_pid="false" multiplier="-1" max_effort="10.6" />       
+    <!-- END of Joint Mimic -->
 
     <!--rgb camera joint -->
     <xacro:fixed_joint name="mono_joint" parent="arm_link4" child="mono_link" xyz="-0.0481 -0.05145 -0.0022" rpy="${pi/2} 0 0"/>
@@ -218,7 +226,7 @@
     <mu2>0.1</mu2>
     <kp>1000000</kp>
     <kd>1000000</kd>
-    <material>Gazebo/Gray</material>  
+    <material>Gazebo/Gray</material>
   </gazebo>  
 
   <gazebo reference="arm_link1">
@@ -267,6 +275,7 @@
     <kp>1000000</kp>
     <kd>1000000</kd>  
     <material>Gazebo/Green</material>  
+    <selfCollide>false</selfCollide>    
   </gazebo> 
 
   <gazebo reference="rlink2">
@@ -274,7 +283,8 @@
     <mu2>0.1</mu2>
     <kp>1000000</kp>
     <kd>1000000</kd>  
-    <material>Gazebo/Green</material>  
+    <material>Gazebo/Green</material>
+    <selfCollide>false</selfCollide>    
   </gazebo>   
   
   <gazebo reference="rlink3">
@@ -283,6 +293,7 @@
     <kp>1000000</kp>
     <kd>1000000</kd>  
     <material>Gazebo/Green</material>  
+    <selfCollide>false</selfCollide>    
   </gazebo>
 
   <gazebo reference="llink1">
@@ -290,7 +301,8 @@
     <mu2>0.1</mu2>
     <kp>1000000</kp>
     <kd>1000000</kd>  
-    <material>Gazebo/Green</material>  
+    <material>Gazebo/Green</material>
+    <selfCollide>false</selfCollide>  
   </gazebo>
 
   <gazebo reference="llink2">
@@ -299,6 +311,7 @@
     <kp>1000000</kp>
     <kd>1000000</kd>  
     <material>Gazebo/Green</material>  
+    <selfCollide>false</selfCollide>
   </gazebo>
 
   <gazebo reference="llink3">
@@ -307,6 +320,7 @@
     <kp>1000000</kp>
     <kd>1000000</kd>  
     <material>Gazebo/Green</material>  
+    <selfCollide>false</selfCollide>
   </gazebo> 
 
   <gazebo reference="mono_link">

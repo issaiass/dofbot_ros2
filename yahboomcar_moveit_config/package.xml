@@ -6,7 +6,7 @@
   <description>
      An automatically generated package with all the configuration and launch files for using the yahboomcar_X3plus with the MoveIt Motion Planning Framework
   </description>
-  <maintainer email="issaiass@hotmail.com">rangel</maintainer>
+  <maintainer email="issaiass@hotmail.com">rangel alvarado</maintainer>
 
   <license>BSD</license>
 
@@ -14,7 +14,7 @@
   <url type="bugtracker">https://github.com/ros-planning/moveit2/issues</url>
   <url type="repository">https://github.com/ros-planning/moveit2</url>
 
-  <author email="issaiass@hotmail.com">rangel</author>
+  <author email="issaiass@hotmail.com">rangel alvarado</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

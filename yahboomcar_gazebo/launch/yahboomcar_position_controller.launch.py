@@ -20,6 +20,7 @@ def generate_launch_description():
     arg_world = DeclareLaunchArgument(name='world', default_value=world_path, description='path to the world file')
 
     # NODES
+    # node that spawn the robot
     spawn = Node(package='gazebo_ros',
                        executable='spawn_entity.py',
                        name='urdf_spawner',
@@ -27,6 +28,7 @@ def generate_launch_description():
                                   '-entity', 'robot', '-z', '0.5'],
                        output='screen')
 
+    # node that publish joint states
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -34,6 +36,8 @@ def generate_launch_description():
                    "--controller-manager", "/controller_manager"],
     )
 
+    # node that launch the controller from the yaml to the controller manager
+    # yaml specified in the .urdf.gazebo.xacro and yahboomcar_control/config
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -67,7 +71,6 @@ def generate_launch_description():
                 on_exit=[robot_controller_spawner],
             )
         )
-
 
     # Prepare arguments and node as objects
     arguments = [arg_world]
